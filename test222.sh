@@ -1,0 +1,1 @@
+echo -e "\033[0;31mThis text is red\033[0m This is White"
