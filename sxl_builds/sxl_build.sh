@@ -11,12 +11,12 @@ copy_file() {
         local src_md5=$(md5sum "$file_path" | awk '{print $1}')
         local dst_md5=$(md5sum "$SHARE_PATH/$file_name" | awk '{print $1}')
         if [ "$src_md5" = "$dst_md5" ]; then
-            echo "// skip $file_name"
+            echo -e "\033[0;34m$file_name\033[0m skip"
             return
         fi
     fi
     cp "$file_path" "$SHARE_PATH"
-    echo -e ">>>>>>>>>>>>>>>>>>>>>> [ \033[0;31m$file_name\033[0m ] copied to $SHARE_PATH"
+    echo -e " [ \033[0;31m$file_name\033[0m ] copied to [ \033[0;31m$SHARE_PATH\033[0m ]"
 }
 
 copy_file ./out/sv/sdk/media_sdk/lib/libmedia_interface.so
