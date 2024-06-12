@@ -5,18 +5,17 @@ SHARE_PATH=~/work/share/skdl0401p/lib
 copy_file() {
     local file_path="$1"
     #打印file_path的md5值
-    md5sum "$file_path"
+    local src_md5=$(md5sum "$file_path" | awk '{print $1}')
     local file_name=$(basename "$file_path")
     if [ -f "$SHARE_PATH/$file_name" ]; then
-        local src_md5=$(md5sum "$file_path" | awk '{print $1}')
         local dst_md5=$(md5sum "$SHARE_PATH/$file_name" | awk '{print $1}')
         if [ "$src_md5" = "$dst_md5" ]; then
-            echo -e "\033[0;34m$file_name\033[0m skip"
+            echo -e "[ \033[0;34m$src_md5\033[0m ] [ \033[0;34m$file_name\033[0m ] skip"
             return
         fi
     fi
     cp "$file_path" "$SHARE_PATH"
-    echo -e " [ \033[0;31m$file_name\033[0m ] copied to [ \033[0;31m$SHARE_PATH\033[0m ]"
+    echo -e "[ \033[0;31m$src_md5\033[0m ] [ \033[0;31m$file_name\033[0m ] copied to [ \033[0;31m$SHARE_PATH\033[0m ]"
 }
 
 copy_file ./out/sv/sdk/media_sdk/lib/libmedia_interface.so
