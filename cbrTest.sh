@@ -2,10 +2,13 @@
 
 # 文件路径
 DATA_FILE="/userdata/sxl/venc_data.txt"
+DATA_FILE2="/userdata/sxl/proc_venc_data.txt"
+
 # PYTHON_SCRIPT="plot_data.py"
 
 # 清空数据文件
 echo "ChnId  State  EnPred  base  enhance MaxStreamCnt  Fps_1s    kbps1s  Fps10s    kbps10s" > "$DATA_FILE"
+echo "cat /proc/mi_modules/mi_venc/mi_venc1 :" > "$DATA_FILE2"
 
 total_bit=0
 total_count=0
@@ -14,9 +17,9 @@ peak_min_bitrate=9999999
 target_bitrate=0
 # 定义函数来读取和保存数据
 record_data() {
-    # cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$" >> "$DATA_FILE"
+    cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$" >> "$DATA_FILE"
 
-    cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE"
+    cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE2"
     if [ $target_bitrate -eq 0 ]; then
         file="/proc/mi_modules/mi_venc/mi_venc1"
         content="ChnId RateCtl  GOP MaxBitrate  IPQPDelta  MaxQp  MinQp  MaxIQp  MinIQp  MaxISize  MaxPSize MaxIPProp  QpMap  AbsQp  ModeMap"
@@ -45,7 +48,7 @@ record_data() {
     down_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($average_bitrate - $target_bitrate) / $target_bitrate * 100)}")
     br_range_rate=$(awk "BEGIN {printf \"%.2f\", (($bitrate - $target_bitrate) / $target_bitrate * 100)}")
     echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit"
-    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE"
+    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE2"
 }
 
 # 每隔一秒记录一次数据，共记录120次
