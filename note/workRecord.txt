@@ -1,0 +1,1169 @@
+我需要用C++处理一个文件夹：
+/userdata/log/sv # ls -l
+total 2404
+-rw-r--r--    1 root     root         59221 Mar 19 01:24 kmsg_1970-01-01.0.txt
+-rw-r--r--    1 root     root         37426 Mar 18 13:09 kmsg_2024-03-18.0.txt
+-rw-r--r--    1 root     root         26717 Mar 19 01:55 kmsg_2024-03-19.0.txt
+-rw-r--r--    1 root     root          9120 Mar 19 01:24 multisink_1970-01-01.txt
+-rw-r--r--    1 root     root        430080 Mar 18 13:14 multisink_2024-03-18.txt
+-rw-r--r--    1 root     root        942080 Mar 19 01:52 multisink_2024-03-19.1.txt
+-rw-r--r--    1 root     root        937984 Mar 19 13:20 multisink_2024-03-19.txt
+
+
+不要引入结构体, 直接通过通过文件名中第一个下划线后的数字与横线组合来判断文件的创建时间, 例如1234-05-06;
+如果文件名中第一个下划线后的数字与横线组合后面有点和数字组成的后缀,比如multisink_2024-03-19.1.txt, 那么这个数字越大,则表明这个文件越老, 比如multisink_2024-03-19.11.txt 比 multisink_2024-03-19.9.txt 更老;
+如果文件名中第一个下划线后的数字与横线组合后面没有点和数字组成的后缀,比如multisink_2024-03-19.txt, 那么它就是3月19号最新的文件;
+请用C++11实现，使用opendir / readdir / closedir 操作文件;
+当文件夹的总文件大小超过600MB时,删除最老的文件;
+
+
+
+
+
+
+
+
+
+
+我需要你帮我写一个shell脚本。
+背景：
+执行 cat /proc/meminfo |grep MemAvailable 这条命令会打印如下：
+/userdata/log/sv # cat /proc/meminfo |grep MemAvailable
+MemAvailable:     779300 kB
+需求：
+1. 每秒执行一次cat /proc/meminfo |grep MemAvailable， 循环执行1000次
+2. 第一次执行时，记录MemAvailable的值，假设我们标记为BasicMem
+3. 每次执行时，根据当前MemAvailable 和 BasicMem，统计差值，并显示差值的百分比。比如第一次时MemAvailable = 779300， 第二次时 MemAvailable = 703210， 那么需要在串口显示
+MemAvailable:     703210 kB (-9.763%)
+
+
+
+
+
+
+
+
+
+
+
+
+1. 常用串口指令
+
+配置网络
+udhcpc -b -i eth0 -s /sbin/udhcpc.script
+//eth0 ： 默认使用eth0
+
+ifconfig eth0:1 10.66.30.2 netmask 255.255.254.0
+ifconfig eth0:1 10.66.31.47 netmask 255.255.254.0
+
+ifconfig eth0:1 10.64.30.12 netmask 255.255.254.0
+ifconfig eth0:1 10.66.30.53 netmask 255.255.254.0
+ifconfig eth0:1 10.66.30.74 netmask 255.255.254.0
+
+ifconfig eth0:1 10.66.31.101 netmask 255.255.254.0
+ifconfig eth0:1 10.66.30.33 netmask 255.255.254.0
+ifconfig eth0:1 172.20.46.49 netmask 255.255.254.0
+
+
+mkdir /userdata/sxl
+cd  /userdata/sxl
+mount -t nfs 10.66.30.1:/home/sxl/work/share /mnt -o nolock,tcp
+cp /mnt/my_shell_script/p/*.sh ./
+cp /mnt/my_shell_script/te/*.sh ./
+
+cp /mnt/my_tools/syncTime ./
+cp /mnt/buildTools/skdl0401te/* ./ 
+
+echo "sh /userdata/sxl/netconfig.sh" >> /customer/demo.sh
+
+echo "/userdata/sxl/syncTime 10.66.30.1" >> /customer/demo.sh
+echo "/userdata/sxl/syncTime_te 10.66.30.1" >> /customer/demo.sh
+
+
+echo "ifconfig eth0:1 10.66.30.53 netmask 255.255.254.0"  >> /customer/demo.sh
+echo "mount -t nfs 10.66.30.1:/home/sxl/work/share /mnt -o nolock,tcp" >> /customer/demo.sh
+
+
+echo dump_out 0 216000 /mnt > /proc/mi_modules/mi_venc/mi_venc0
+
+LD_LIBRARY_PATH=/lib:/config/lib:/oem/engine/mpp /customer/bin/at_test
+
+挂载 mnt.
+
+sudo apt install samba
+
+sudo nano /etc/samba/smb.conf
+[shared]
+        path = /path/to/your/shared/folder
+        available = yes
+        valid users = <your-username>
+        read only = no
+        browsable = yes
+        public = yes
+        writable = yes
+
+[share]                                                                                                            
+        path = /home/sxl/work/share                                                                                
+        read only = no                                                                                             
+        guest ok = yes                                                                                             
+                                                                                                                   
+[sxl_code]                                                                                                         
+        path = /home/sxl/code                                                                                      
+        read only = no                                                                                             
+        guest ok = yes                                                                                             
+[sxl_test]                                                                                                         
+        path = /home/sxl/code/skdl0401p/sxl_test                                                                   
+        read only = no                                                                                             
+        guest ok = yes   
+
+# 设置 Samba 用户密码：
+# 使用以下命令设置 Samba 用户密码（注意替换 <your-username> 为实际的用户名）：
+sudo smbpasswd -a <your-username>
+
+# 重启 Samba 服务：
+# 输入以下命令以重启 Samba 服务使更改生效：
+
+sudo systemctl restart smbd
+
+sudo apt-get update
+sudo apt-get install nfs-kernel-server
+sudo mkdir /home/sxl/work/share
+sudo nano /etc/exports
+# 内容增加：
+/home/sxl/work/share 10.66.31.0/23(rw,sync,no_subtree_check)
+/home/sxl/work/share 10.66.30.0/23(rw,sync,no_subtree_check)
+sudo systemctl restart nfs-kernel-server
+
+# ubuntu
+mount -t nfs 10.66.30.1:/home/sxl/work/share /mnt -o nolock,tcp
+mount -t nfs 10.66.30.1:/home/sxl/work/share /userdata/sxl/mnt -o nolock,tcp
+
+mount -t nfs 192.168.1.20:/home/sxl/work/share /mnt -o nolock,tcp
+mount -t nfs 192.168.1.20:/home/sxl/code/skdl0401_te/sxl_test /mnt -o nolock,tcp
+
+
+# win系统
+mount -t nfs -o nolock 10.66.30.1:/d/nfs /mnt
+mount -t nfs -o nolock 10.66.30.19:/d/nfs /mnt
+mount -t nfs -o nolock 172.20.46.46:/d/nfs /mnt
+mount -t nfs -o nolock 10.64.30.229:/d/nfs /mnt
+
+
+
+指定库所在路径
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/oem/engine/mpp
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/customer/libs
+
+
+dddd
+串口权限
+sudo chmod a+rw /dev/ttyUSB0
+sudo chmod a+rw /dev/ttyUSB1
+
+
+ls /dev/tty*
+stty -F /dev/ttyUSB0 115200 cs8 -cstopb -parity
+screen /dev/ttyUSB0 115200
+
+stty -F /dev/ttyUSB1 115200 cs8 -cstopb -parity
+screen /dev/ttyUSB1 115200
+确定串口设备的名称：在终端中运行以下命令来查看系统中可用的串口设备：
+通常情况下，串口设备的名称类似于 /dev/ttyUSB0 或 /dev/ttyS0。
+
+设置串口参数：在终端中运行以下命令来设置串口参数：
+stty -F /dev/ttyUSB0 115200 cs8 -cstopb -parity
+在上面的命令中，/dev/ttyUSB0 是指你要连接的串口设备名称，115200 是波特率， cs8 表示数据位为 8，-cstopb 表示停止位为 1，-parity 表示无校验位。
+打开串口设备：在终端中运行以下命令来打开串口设备：
+screen /dev/ttyUSB0 115200
+在上面的命令中，/dev/ttyUSB0 是指你要连接的串口设备名称，115200 是波特率。
+结束会话：当你想结束会话时，可以按下 Ctrl + A，然后按下 K 来关闭当前屏幕会话。
+
+
+
+sigma star
+刷机
+setenv ipaddr 10.66.31.47
+setenv gatewayip 10.66.31.254
+setenv netmask 255.255.255.0
+setenv serverip 10.66.30.1
+setenv ethaddr 00:70:19:BA:22:75
+setenv ethact gmac0
+saveenv
+(不需要reset，回车，直接estar即可)
+estar
+
+获取温度
+cat /sys/class/mstar/msys/TEMP_R
+HDMI in信号源
+cat /sys/lt6911c/RATE 
+查看带宽情况
+cat /sys/devices/system/miu/miu_bw0/measure_all_hw
+输出在串口，或者 先cat kmsg
+dump yuv
+echo dumptaskfile 6 3 /userdata > /proc/mi_modules/mi_scl/mi_scl1
+sleep 5 && echo dumptaskfile 6 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1
+sleep 5 && echo dumptaskfile 0 3 /mnt > /proc/mi_modules/mi_scl/mi_scl2
+sleep 5 && echo dumptaskfile 7 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1
+sleep 5 && echo dumpframe 0 6 /mnt/ > /proc/mi_modules/mi_disp/mi_disp0
+
+echo dumptaskfile 0 3 /tmp > /proc/mi_modules/mi_isp/mi_isp0
+echo dumptaskfile 4 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1
+
+命令
+echo dumpframe [layerid] [portid] [path] > /proc/mi_modules/mi_disp/mi_disp0
+参数说明
+[layerid] 视频层id [portid] port id [path] dump出来的数据的存储路径
+举例
+sleep 5 && echo dumpframe 0 6 /mnt/ > /proc/mi_modules/mi_disp/mi_disp0
+
+sleep 5 && echo dumptaskfile 6 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1 && sleep 1 && echo dumptaskfile 0 3 /mnt > /proc/mi_modules/mi_scl/mi_scl2 && sleep 1 && echo dumptaskfile 7 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1 && sleep 1 && echo dumpframe 0 6 /mnt/ > /proc/mi_modules/mi_disp/mi_disp0 && sleep 1 && echo dumpframe 0 16 /mnt/ > /proc/mi_modules/mi_disp/mi_disp0
+
+
+
+
+echo debuglv 8 3 > /proc/mi_modules/mi_vif/mi_vif8
+
+echo dumptaskfile 6 3 /mnt true > /proc/mi_modules/mi_scl/mi_scl1
+echo dumptaskfile 7 3 /userdata/sxl/mnt > /proc/mi_modules/mi_scl/mi_scl3
+echo dumptaskfile 0 3 /userdata/sxl/mnt > /proc/mi_modules/mi_scl/mi_scl4
+
+
+echo dumptaskfile 0 3 /tmp > /proc/mi_modules/mi_scl/mi_scl1
+echo dumptaskfile 1 3 /tmp > /proc/mi_modules/mi_scl/mi_scl1
+
+echo dumptaskfile 6 3 /mnt > /proc/mi_modules/mi_scl/mi_scl1
+
+echo dumpframe 0 3 /mnt/ > /proc/mi_modules/mi_disp/mi_disp0
+
+
+echo writeoutfile [chnid cnt path] > /proc/mi_modules/mi_ldc/mi_ldc0
+echo writeoutfile 0 3 /mnt > /proc/mi_modules/mi_ldc/mi_ldc1
+
+
+echo dumptaskfile [chnid, Cnt, /path/, bOnlyDumpResChange, bdumpport] > /proc/mi_modules/mi_isp/mi_isp0
+echo dumptaskfile 0 3 /tmp > /proc/mi_modules/mi_isp/mi_isp0
+
+
+echo dumptaskfile [chnid, Cnt, /path/, bOnlyDumpResChange, bdumpport] > /proc/mi_modules/mi_scl/mi_scl0
+echo dumptaskfile 4 3 /mnt > /proc/mi_modules/mi_scl/mi_scl5
+echo dumptaskfile 7 3 /mnt > /proc/mi_modules/mi_scl/mi_scl3
+
+
+
+echo dump [devid portid path cnt dumpdrop] > /proc/mi_modules/mi_vif/mi_vif0
+        devid: device id
+        portid: port id
+        path: 路径存放
+        cnt: 可选参数，设置要dump的张数，不设置默认为1
+        dumpdrop: 可选参数，设置为1只dump需要drop的frame，默认为0
+echo dump 8 0 /mnt 3 > /proc/mi_modules/mi_vif/mi_vif8
+echo dump 0 0 /tmp 2 1 > /proc/mi_modules/mi_vif/mi_vif0
+
+
+
+
+Echo help 查看可用命令
+功能
+Dump frame 到指定路径
+命令
+echo dump [devid portid path cnt dumpdrop] > /proc/mi_modules/mi_vif/mi_vif0
+参数说明
+devid: device id
+
+portid: port id
+
+path: 路径存放
+
+cnt: 可选参数，设置要dump的张数，不设置默认为1
+
+dumpdrop: 可选参数，设置为1只dump需要drop的frame，默认为0
+举例
+echo dump 0 0 /tmp > /proc/mi_modules/mi_vif/mi_vif0
+
+echo dump 0 0 /tmp 2 1 > /proc/mi_modules/mi_vif/mi_vif0
+
+
+调整scl filter
+echo outputfilter 6 3 1 > /proc/mi_modules/mi_scl/mi_scl1
+
+echo outputfilter [chnid, portid, filtertype] > /proc/mi_modules/mi_scl/mi_scl0
+chnid: channel id
+Portid: port id
+filtertype: 0:auto, 1:bilinear, 2:bicubic
+kmsg会有log
+~ # echo outputfilter 7 3 1 > /proc/mi_modules/mi_scl/mi_scl1
+[ 1971.942516] set chn 7, port 3, eMhalFilterType 1
+
+
+rtspClient
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sxl/code/public/ubuntu/ssl_result/lib64
+./testRTSPClient rtsp://10.66.31.101/live/ch2_1
+
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/sxl/code/public/ubuntu/ssl_result/lib64
+./testRTSPClient rtsp://10.66.30.53/live/ch2_1
+./testRTSPClient rtsp://10.66.30.53/live/ch3_1
+./testRTSPClient rtsp://10.66.31.101/live/ch2_1
+
+同步时间指令
+date -s "2024-3-2 14:59:01"
+
+在369开发板上
+（1）设置一个局域网ip地址
+ifconfig eth0 up
+ifconfig eth0:1 192.168.1.2 netmask 255.255.255.0
+（2）设置一个正常时间
+date -s "2024-3-2 14:59:01"
+（3）启动ntp服务
+ntpd -l
+在linux电脑端
+（1）按照npt客户端
+sudo apt-get install ntpdate
+（2）修改电脑的ip地址为：192.168.1.20 netmask 255.255.255.0
+（3）手工与开发板同步时间
+sudo ntpdate 192.168.1.2
+
+
+
+
+live555
+https://blog.csdn.net/wkd_007/article/details/122425360
+
+./config no-asm shared no-async --prefix=/home/samba/live555/ssl_result  --cross-compile-prefix=arm-hisiv100nptl-linux-
+
+export PATH=$PATH:/home/sxl/work/code/skdl0401p/v1/tools/gcc-10.2.1-20210303-sigmastar-glibc-x86_64_aarch64-linux-gnu/bin
+./config no-asm shared no-async --prefix=/home/sxl/work/code/public/ssl_result  --cross-compile-prefix=aarch64-linux-gnu-
+sed -i 's/-m64//' Makefile
+sudo make && sudo make install
+
+不知为何，有找不到ranlib工具的情况，需要类似下面的指令，指定ranlib的位置
+sudo make install RANLIB=/home/sxl/work/code/skdl0401p/v1/tools/gcc-10.2.1-20210303-sigmastar-glibc-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-ranlib
+make CC=aarch64-linux-gnu-g++
+
+
+CROSS_COMPILE?=   aarch64-linux-gnu-
+COMPILE_OPTS =    $(INCLUDES) -I/home/sxl/work/code/public/ssl_result/include -I. -O2 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+C =               c
+C_COMPILER =      $(CROSS_COMPILE)gcc
+C_FLAGS =         $(COMPILE_OPTS)
+CPP =             cpp
+CPLUSPLUS_COMPILER = $(CROSS_COMPILE)g++
+CPLUSPLUS_FLAGS = $(COMPILE_OPTS) -Wall -DBSD=1
+OBJ =             o
+LINK =            $(CROSS_COMPILE)g++ -o
+LDFLAGS=          -L /home/sxl/work/code/public/ssl_result/lib64
+LINK_OPTS =       $(LDFLAGS)
+CONSOLE_LINK_OPTS =  $(LINK_OPTS)
+LIBRARY_LINK =    $(CROSS_COMPILE)ar cr 
+LIBRARY_LINK_OPTS =
+LIB_SUFFIX =         a
+LIBS_FOR_CONSOLE_APPLICATION = -lssl -lcrypto
+LIBS_FOR_GUI_APPLICATION =
+EXE =
+
+
+
+
+export PATH=$PATH:/home/sxl/work/code/public/ubuntu/ssl_result/lib64/
+或者：
+export PATH=$PATH:/home/sxl/work/code/public/ssl_result/lib64/
+
+
+可以在 Ubuntu 系统上交叉编译 Windows 平台的 testRTSPClient。下面是一些基本步骤：
+1.安装 MinGW-w64 工具链
+MinGW-w64 是一个针对 Windows 平台的开发工具链，你需要在 Ubuntu 上安装 MinGW-w64，来进行 Windows 平台上的交叉编译。你可以通过以下命令来安装：
+sudo apt-get install mingw-w64
+
+1.获取 live555 源代码
+同样地，你需要从 live555 的官方网站上下载最新的源代码，并解压缩到任意目录下。
+1.配置环境变量
+为了让交叉编译工具能够找到 live555 的头文件和库文件，你需要配置相应的环境变量。打开终端并执行以下命令：
+export PATH=/usr/bin:$PATH
+export CROSS_COMPILE=i686-w64-mingw32-
+
+其中，第一行将 /usr/bin 目录添加到 PATH 环境变量中，以确保能够找到 i686-w64-mingw32-gcc 和 i686-w64-mingw32-g++ 等工具；第二行设置 CROSS_COMPILE 环境变量，将其指向 i686-w64-mingw32- 前缀，以便在交叉编译时使用正确的工具。
+1.创建 Makefile
+在 live555 源代码的根目录下，使用以下命令创建 Makefile 文件：
+./genMakefiles mingw-cross
+
+这个命令将会生成一个名为 "mingw-cross" 的目录，并在其中生成 Makefile 文件。
+1.编译 testRTSPClient
+进入 "mingw-cross" 目录，执行以下命令来编译 testRTSPClient：
+make -j4 testProgs
+
+这个命令将会编译 live555 库和 testRTSPClient 程序。编译完成后，在 "mingw-cross" 目录下可以找到编译好的 testRTSPClient.exe 可执行文件。
+希望以上步骤能够帮助你成功地在 Ubuntu 系统上交叉编译出 Windows 平台的 testRTSPClient。如果你遇到任何问题或有任何疑问，请随时告诉我。
+
+
+
+2. 常用 脚本/代码 记录
+循环打印meminfo，统计内存泄漏
+#!/bin/bash
+
+# 获取基准值
+base_mem=$(cat /proc/meminfo | grep MemAvailable | awk '{print $2}')
+echo "BasicMem: $base_mem kB"
+
+# 记录脚本开始时间
+start_time=$(date +%s)
+
+format_time() {
+    local total_seconds=$1
+    local hours=$((total_seconds / 3600))
+    local minutes=$(( (total_seconds % 3600) / 60 ))
+    local seconds=$((total_seconds % 60))
+
+    printf "%02d:%02d:%02d" $hours $minutes $seconds
+}
+
+# 循环执行1000次
+count=1
+while [ $count -le 1000 ]
+do
+    current_time=$(date +%s)
+    elapsed_time=$((current_time - start_time))
+    
+    current_mem=$(cat /proc/meminfo | grep MemAvailable | awk '{print $2}')
+    diff=$((current_mem - base_mem))
+    percentage=$(awk "BEGIN {printf \"%.3f\", ($diff/$base_mem)*100}")
+    
+    formatted_time=$(format_time $elapsed_time)
+    
+    echo "[$formatted_time] MemAvailable:     $current_mem kB ($percentage%)"
+    sleep 1
+    count=$((count + 1))
+done
+
+
+
+std::chrono::steady_clock::time_point 的使用
+                        if(i == CHANNEL_PANORAMA_MAIN)
+                        {
+                            static int counter = 0;
+                            counter++;
+
+                            static std::chrono::steady_clock::time_point current_time;
+                            current_time = std::chrono::steady_clock::now();
+
+                            static std::chrono::steady_clock::time_point previous_frame_time;
+                            if(previous_frame_time != std::chrono::steady_clock::time_point())
+                            {
+                                std::chrono::duration<double, std::milli> frame_duration = current_time - previous_frame_time;
+                                double frame_interval = frame_duration.count();
+
+                                static double max_frame_interval = 0;
+                                if(frame_interval > max_frame_interval)
+                                {
+                                    max_frame_interval = frame_interval;
+                                }
+
+                                static std::chrono::steady_clock::time_point previous_print_time;
+                                if (previous_print_time == std::chrono::steady_clock::time_point())
+                                {
+                                    previous_print_time = current_time;
+                                }
+                                else if (current_time - previous_print_time > std::chrono::seconds(5))
+                                {
+                                    double frame_rate = counter / 5.0;
+                                    printf("[DualCamera]Frame rate: %.2f fps", frame_rate);
+                                    printf("Max frame interval: %.2f ms", max_frame_interval);
+                                    if(max_frame_interval > 50.0)
+                                    {
+                                        printf(" WARNINT.......");
+                                    }
+                                    printf("\n");
+
+                                    previous_print_time = current_time;
+                                    counter = 0;
+                                    max_frame_interval = 0;
+                                }
+                            }
+                            previous_frame_time = current_time;
+                        }
+
+
+3. 网址书签
+camera 
+https://blog.csdn.net/yangwen123/article/details/79854267
+AndroidO Treble架构下Hal进程启动及HIDL服务注册过程
+
+https://redspider110.github.io/2018/12/10/0109-android-camera-5-hardware/
+Camera Hardware 分析 | Earth Guardian (redspider110.github.io)
+
+分类: Android | Earth Guardian (redspider110.github.io)
+camera framework、hardware的分析专栏，内容很细
+
+https://blog.csdn.net/weixin_46083166/article/details/123888365
+Camera2 Google官方demo android-Camera2Basic分析
+
+https://blog.csdn.net/qq_34968572/article/details/107554310
+https://blog.csdn.net/weixin_28898707/article/details/117273617
+Linux环境应用编程（九）：Camera
+
+https://blog.csdn.net/ioiol/article/details/103127468?utm_medium=distribute.pc_aggpage_search_result.none-task-blog-2~aggregatepage~first_rank_ecpm_v1~rank_v31_ecpm-2-103127468-null-null.pc_agg_new_rank&utm_term=camera%20%E7%9A%84session&spm=1000.2123.3001.4430
+camera session 介绍
+
+https://blog.csdn.net/ioiol/category_9507894.html
+camera专栏，关注一下
+
+https://blog.csdn.net/wjky2014/article/details/120480345
+camera metadata 的博文，挺细
+
+https://blog.csdn.net/jsn_ze/article/details/54289066
+stride的介绍
+
+
+camera hal
+https://blog.csdn.net/u013961718/article/details/87302254
+Android Camera2+HAL3架构
+
+https://www.cnblogs.com/blogs-of-lxl/p/5152578.html
+Android: Camera1 open、preview、take picture流程分析
+分析挺长，可以慢慢看看，从 app到 fw 到hal层都有
+
+
+AndroidO Treble架构下Hal进程启动及HIDL服务注册过程
+可以参考这篇文章了解hal进程的启动原理。Treble 架构是个挺大的概念，需要重点学习一下。
+AndroidO Treble架构（一）：HwServiceManager
+
+
+camera service
+https://blog.csdn.net/luoyanglizi/article/details/51586437
+Android中的Service：默默的奉献者 (1)
+
+https://blog.csdn.net/Linux_zhicheng/article/details/123529629
+Camera 服务启动流程简析
+
+https://deepinout.com/android-camera/android-camera-service-intro.html
+android camera service介绍
+
+https://blog.csdn.net/chuotao1354/article/details/100768024?spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-5-100768024-blog-103127468.pc_relevant_aa&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-5-100768024-blog-103127468.pc_relevant_aa&utm_relevant_index=10
+Android Camera原理之camera service与camera provider session会话与capture request轮转
+
+camera 驱动
+https://www.cnblogs.com/huangchaosong/p/7146020.html
+Camera驱动开发知识讲解
+
+https://blog.csdn.net/weixin_38328785/article/details/106135972
+Camera基本结构及原理
+
+
+https://blog.csdn.net/hua371242480/article/details/88629023?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-1.control
+sensor接口之DVP
+
+
+完成linux-5.5~linux-5.10 v412相关新特性预研并输出预研报告
+新特性资料链接：https://kernelnewbies.org/LinuxVersions
+预研过程中相关信息请同步更新至onlindoc:http://onlinedoc.allwinnertech.com/library/ffd9d78f-17bc-44cc-9494-272eda4ffa08/linux-5.10%E5%86%85%E6%A0%B8%E5%8D%87%E7%BA%A7/%E6%96%B0%E7%89%B9%E6%80%A7%E9%A2%84%E7%A0%94
+
+- Add V4L2_CAP_IO_MC to indicate that input and output are controlled by the Media Controller instead of V4L2 commit, commit, commit, commit, commit
+- Add VIDIOC_SUBDEV_QUERYCAP ioctl commit, commit
+
+Linux摄像头驱动1——vivid
+Linux摄像头驱动2——UVC  UVC
+Linux摄像头驱动3——LCD显示
+Linux摄像头驱动4——CMOS摄像头  CMOS摄像头
+Linux摄像头驱动系列文章
+
+https://blog.csdn.net/go_str/article/details/80834571
+关于 UVC的博客。深入看一下这个博客所在的专栏。
+
+https://www.usbzh.com/
+关于usb协议的网站，包括uvc的内容和hid的内容
+
+https://blog.csdn.net/hceng_linux/article/details/89874036?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522162427212716780271530188%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=162427212716780271530188&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-2-89874036.first_rank_v2_pc_rank_v29&utm_term=vidioc_s_fmt_vid_cap_mplane&spm=1018.2226.3001.4187
+Linux摄像头驱动1——vivid
+
+
+
+https://blog.csdn.net/seek654201/article/details/78386031
+i2c地址的介绍
+https://blog.csdn.net/mantis_1984/article/details/18254767
+i2ctools，这个工具可以检测设备的i2c总线上有哪些子设备，还有其他的一些实用功能
+https://blog.csdn.net/liushi558/article/details/70184788
+I2C波形
+
+图像
+https://www.cnblogs.com/roger-yu/p/16041181.html
+Android 12(S) 图像显示系统 - 简述Allocator/Mapper HAL服务的获取过程（十五）
+https://www.cnblogs.com/roger-yu/p/15641545.html
+Android 12(S) 图像显示系统  专栏
+https://blog.csdn.net/haodada1226/article/details/121703143
+ImageReader相关函数分析
+https://blog.csdn.net/zhuyong006/article/details/102703963?spm=1001.2014.3001.5502
+Camera 初始化(Preview) 三（预览Buffer的流程）
+
+Android 12(S) 图像显示系统 - 解读Gralloc架构及GraphicBuffer创建/传递/释放（十四）
+https://www.cnblogs.com/roger-yu/p/16041193.html
+
+BufferQueue 学习总结（内附动态图）
+https://blog.csdn.net/m0_54238665/article/details/117136186
+
+
+V4L2
+https://blog.csdn.net/u011037593/article/details/115415136
+Linux V4L2子系统分析（一）
+这个系列写的挺细，挺好 https://blog.csdn.net/u011037593/category_10880898.html
+
+https://blog.csdn.net/liujun3512159/article/details/123415694
+V4L2框架-control
+v4l2_ctrl_new_std 函数将会基于 control 的 ID 来填充所有成员，但是除了 min, max, step 以及 default values，它们是驱动特定的（函数内部不会自行取值填充，这些需要函数调用的时候在参数里面指定）。每个驱动的上述成员值范围大小都是不固定的，但是 type、name、flags （这三个变量可以在上面那个函数内部实现看到）这些是是全局的，它们被 v4l2 驱动核心固化，每个 ID 都有自己特定的 type,name,flags，这些不需要驱动模块去关心，交给 V4L2 框架去做好了。但是我们仍然需要关注一个点，那就是 flag 变量，里面有很多类型都有自己特定的特性，比如 V4L2_CTRL_FLAG_WRITE_ONLY 表明该 ID 对应的 control 只能够从用户空间往下面写入值，无法读出，V4L2_CTRL_FLAG_VOLATILE 表明值可能会被硬件本身改变，也是只读的，每次写入的时候会被忽略，这些对我们编程是至关重要的，我们要弄清楚我们的 control 是什么类型的（尤其在需要自定义 control 的时候）。该函数调用之后相关的控制 ID 对应的 ctrl 初始值被设置为 def 参数指定的值。搞不清楚就会造成命名调用了相关的 ctrl，内核驱动却收不到消息的状况。
+
+https://blog.csdn.net/ldl617/article/details/115063305
+Linux v4l2架构学习
+https://blog.csdn.net/u013904227/article/details/80889947
+V4L2框架-media device
+
+http://blog.chinaunix.net/uid-30108475-id-5606455.html
+V4L2用户空间和kernel层driver的交互过程
+这里介绍了 VIDIOC_S_FMT 到 vidioc_s_fmt_vid_cap_mplane 到过程
+
+https://blog.csdn.net/u013904227/article/details/80718831
+V4L2框架概述
+https://www.kernel.org/doc/html/v4.9/media/uapi/v4l/subdev-formats.html#v4l2-mbus-pixelcode
+V4L2关于 pixel format的介绍
+https://blog.csdn.net/airk000/article/details/25032901
+很多图像格式的介绍，好像是某个V4L2文档翻译系列
+https://blog.csdn.net/xxxxxlllllxl/article/details/22074151
+v4l2驱动3-linux3.0.8中v4l2_format详解
+
+https://blog.csdn.net/weixin_49303682/article/details/125012067
+V4L2：vidioc_dqbuf类似的调用流程
+
+https://blog.csdn.net/panp85/article/details/51087693
+uvc调用v4l2的逻辑
+
+https://blog.csdn.net/li_wen01/article/details/53557949
+一个v4l2 demo
+
+https://github.com/pyrovski/h264-v4l2-capture
+h264-v4l2-capture
+
+https://github.com/skypx/Android-V4l2-Capture-Client-Demo
+Android-V4l2-Capture-Client-Demo-master
+
+
+linux 系统知识
+https://blog.csdn.net/crazycoder8848/article/details/44131735
+linux 内核编译
+
+https://www.cnblogs.com/klb561/p/9192630.html
+Linux 内核编译步骤及配置详解
+
+https://www.cnblogs.com/hoys/archive/2011/04/01/2002299.html
+Linux驱动中，probe函数何时被调用
+可惜这篇文章太老了，11年的，用的例子还是2.6，不知道参考价值大不大
+
+https://blog.csdn.net/djw931017/article/details/86746449
+st_mode分析
+
+https://www.cnblogs.com/edver/p/7260696.html
+linux中断机制
+
+ https://blog.csdn.net/baidu_40808339/article/details/108886984
+linux app编程入门
+https://blog.csdn.net/zmxiangde_88/article/details/8024223?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%228024223%22%2C%22source%22%3A%22sxl9266%22%7D
+Makefile.am文件的实例讲解 
+
+https://www.cnblogs.com/baiduboy/p/6849587.html
+https://blog.csdn.net/qq_41256212/article/details/94457489
+ https://www.cnblogs.com/huzz/articles/5863395.html
+makefile语法介绍
+https://www.kancloud.cn/kancloud/make-command/45592
+make makefile相关介绍
+
+https://www.cnblogs.com/lnlvinso/p/13363480.html
+chmod只修改文件或者只修改目录权限
+　　chmod和chmod -R目录常用于修改文件，文件夹权限。加上-R参数会迭代的修改子目录和文件的权限。
+       如果只想修改文件的权限，文件夹的权限不受影响。则可以使用下面的方法：
+       chmod 750 `find /a /b -type f`
+       会修改文件夹/a,/b下的文件的权限。同时会迭代的修改/a,/b子目录下的文件的权限。
+        查找文件夹下的文件同时，也可以指定文件。匹配的文件的权限会被修改
+        chmod 750 `find /a /b *.json -type f`
+        如果只想修改文件夹的权限，文件的权限不受影响。则可以使用下面的方法：
+       chmod 750 `find /a /b -type d`
+chmod 777 -R vin
+chmod 664 `find /a /b *.json -type f`
+
+https://blog.csdn.net/zhying719/article/details/105085579
+memcpy速度太慢？掌握这个技术让内存拷贝效率成倍提升
+
+https://blog.csdn.net/xiabodan/article/details/40042863
+https://blog.csdn.net/zhying719/article/details/105085579
+neon memory copy
+static void memcpy_arm(volatile  char *dst, volatile char *src, int sz)
+{
+     if (sz & 63) {
+        sz = (sz & -64) + 64;
+     }
+
+    asm volatile ("NEONCopyPLD:         \n"
+          "    VLDM %[src]!,{d0-d7}      \n"
+          "    VSTM %[dst]!,{d0-d7}      \n"
+          "    SUBS %[sz],%[sz],#0x40    \n"
+          "    BGT NEONCopyPLD          \n"
+          : [dst]"+r"(dst), [src]"+r"(src), [sz]"+r"(sz) : : "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "cc", "memory");
+}
+
+
+
+https://blog.csdn.net/wuyongpeng0912/article/details/46739233
+加载内核模块-Unknown symbol错误分析
+从现有经验看，Unkonwn symbol错误大多是因为依赖的ko没有加载。
+比如a.ko  b.ko  c.ko 
+a依赖b，b依赖c，那么在insmod阶段就要
+insmod c.ko
+insmod b.ko
+insmod a.ko
+这样的顺序，否则直接insmod a.ko就会报错，而报错的符号一般就是b.ko 和 c.ko中声明、实现的函数。
+
+https://blog.csdn.net/polarisyj86/article/details/90812387
+在Linux内核中增加新驱动模块
+
+http://www.wowotech.net/linux_kenrel/uevent.html
+Linux设备模型(3)_Uevent
+
+https://blog.csdn.net/wdjjwb/article/details/77297372?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163547428516780274143056%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=163547428516780274143056&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~sobaiduend~default-1-77297372.first_rank_v2_pc_rank_v29&utm_term=dts%E6%96%87%E4%BB%B6&spm=1018.2226.3001.4187
+dts解析
+
+https://blog.csdn.net/lizuobin2/article/details/51570196
+https://blog.csdn.net/huangweiqing80/article/details/82769564
+Linux 设备总线驱动模型
+https://blog.csdn.net/u013216061/article/details/72511653
+module_init解析
+https://blog.csdn.net/qq_40732350/article/details/82992904
+5.linux设备驱动模型
+https://elixir.bootlin.com/linux/latest/ident/of_clk_get
+似乎是一个linux的小站，可以查很多原生函数的定义
+Welcome to The Linux Kernel’s documentation — The Linux Kernel documentation
+linux kernel 文档站，跟前一个搭配使用效果更佳
+https://www.cnblogs.com/lifexy/p/10292742.html
+linux kconfig的一些内容。可以配置对某些模块进行编译。
+https://biscuitos.github.io/blog/DTS-for_each_available_child_of_node/#header
+for_each_available_child_of_node
+另外这个小站 有点意思，关注一下
+
+https://www.cnblogs.com/pengdonglin137/p/3533864.html
+linux，__attribute__用法
+https://blog.csdn.net/pillarbuaa/article/details/7680372#t1
+platform device相关内容阅读，还有 probe 函数 的实际调用时机，注意看一下
+https://blog.csdn.net/shafa00419/article/details/85234867
+linux 中module_init()加载顺序 ，或者说优先级
+
+
+
+https://blog.csdn.net/weixin_45590473/article/details/122608048
+Cmakelist 编译介绍
+
+
+https://blog.csdn.net/tutou_gou/article/details/121284474
+spdlog详解
+
+Android 系统知识
+https://android.googlesource.com/
+android源码
+
+http://aospxref.com/android-12.0.0_r3/
+在Android源码中搜索
+
+https://www.cnblogs.com/senior-engineer/p/4750114.html
+Android Studio 下载地址【包括国内本地下载】
+https://zhuanlan.zhihu.com/p/24633328
+史上最简单Android源码编译环境搭建方法
+https://blog.csdn.net/luoyanglizi/article/details/51980630?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522165776908316782246438569%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=165776908316782246438569&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-51980630-null-null.142^v32^control,185^v2^control&utm_term=AIDL&spm=1018.2226.3001.4187
+Android：学习AIDL，这一篇文章就够了(上)
+
+https://www.cnblogs.com/blogs-of-lxl/p/11232754.html
+Android : 供应商原生开发套件 (VNDK)
+
+https://my.oschina.net/youranhongcha/blog/226274
+品茗论道说广播(Broadcast内部机制讲解)
+
+https://blog.csdn.net/ll148305879/article/details/91858778
+Android系统修改硬件设备访问权限
+
+https://blog.csdn.net/tkwxty/article/details/104411520
+Android.bp入门指南之Android.mk转换成Android.bp
+
+http://blog.sina.com.cn/s/blog_158e8a62f0102wuy4.html
+Android GraphicBuffer机制
+
+https://blog.csdn.net/jinzhuojun/article/details/39698317
+Android中的GraphicBuffer同步机制-Fence
+
+
+https://www.cnblogs.com/ArsenalfanInECNU/p/16952781.html
+查看 android kernel log
+
+C++
+https://blog.csdn.net/m0_58086930/article/details/122466500?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22122466500%22%2C%22source%22%3A%22sxl9266%22%7D
+STL详解（很全）
+https://blog.csdn.net/zhangyonghui007/article/details/112983891
+C++ list::splice()函数详解
+
+https://blog.csdn.net/ydeway/article/details/100771183
+async/await函数
+
+https://blog.csdn.net/tonglin12138/article/details/93657393
+浅谈——void (*signal(int, void (*)(int)))(int) 函数声明
+
+https://blog.csdn.net/xiaomu_347/article/details/82563688
+c++11/14/17标准你了解多少
+
+http://www.cplusplus.com/reference/map/map/count/
+一个C++标准库函数说明文档
+
+https://zhuanlan.zhihu.com/p/54074787
+C++中4种方式把字符串和数字连接起来
+主要就是sprintf 函数，这种方法是C风格的方法，适用范围比较广
+
+https://www.cnblogs.com/xiaohaigegede/p/14008121.html
+C++11 条件变量（condition_variable） 使用详解
+
+
+RUST
+https://www.rust-lang.org/learn
+rust语言
+算法
+https://www.cnblogs.com/skywang12345/p/3245399.html
+红黑树
+https://www.cnblogs.com/onepixel/p/7674659.html
+经典排序算法
+
+python
+https://blog.csdn.net/weixin_37988176/article/details/109377311?csdn_share_tail=%7B%22type%22%3A%22blog%22%2C%22rType%22%3A%22article%22%2C%22rId%22%3A%22109377311%22%2C%22source%22%3A%22sxl9266%22%7D
+python可以开发app吗-怎么用python开发app
+
+https://www.liaoxuefeng.com/wiki/1016959663602400/1018139060027680
+Day 2 - 编写Web App骨架
+用python 编写 app的方法
+
+https://cloud.tencent.com/developer/inventory/1900/article/1087246
+https://www.runoob.com/python3/python3-tutorial.html
+快学Python3
+
+Kotlin
+https://blog.csdn.net/qq_37128049/article/details/106610630
+kotlin专栏
+鸿蒙
+http://weharmonyos.com/
+一个小站，研究open harmony的
+
+https://blog.csdn.net/kuangyufei/article/details/118932416
+鸿蒙 gn文件 语法介绍
+
+https://gitee.com/openharmony
+鸿蒙开源代码下载
+
+https://blog.csdn.net/weixin_47070198/article/details/109602855
+鸿蒙 camera hal相关
+
+https://blog.csdn.net/codefly/article/details/108901712
+鸿蒙 HDF
+
+https://device.harmonyos.com/cn/docs/develop/guide/driver-hdf-manage-0000001053493462
+华为 HDF
+
+https://blog.csdn.net/weixin_47070198/article/details/123138295
+OpenHarmony轻量系统开发【1】初始OpenHarmony
+
+https://blog.csdn.net/weixin_47070198/article/details/110386329
+鸿蒙轻量设备侧Camera应用中的Surface使用
+
+1、HPM Bundle的基本概念
+
+Bundle是OpenHarmony中一个用来表示分发单元的术语，等同于包，一个Bundle中通常包含以下内容：
+
+
+
+被分发的二进制文件（二进制类型）
+
+被分发的源代码文件（源代码/代码片段类型）
+
+编译脚本（发行版类型需要）
+
+自身的说明文件
+
+bundle.json：元数据声明（名称，版本，依赖等）
+
+LICENSE：许可协议文本
+
+README.md：自述文件
+
+CHANGELOG.md：变更日志（可选）
+
+-----------------------------------
+
+©著作权归作者所有：来自51CTO博客作者开源基础软件社区官方的原创作品，请联系作者获取转载授权，否则将追究法律责任
+
+移植案例与原理 - HPM包描述文件bundle.json
+
+https://blog.51cto.com/harmonyos/5082426
+
+
+https://www.openharmony.cn/#/documents/application-dev-quickstart/application-dev-quickstart-1/%E6%A6%82%E8%BF%B0
+OpenHarmony应用开发
+
+
+音频
+http://www.cnblogs.com/cheney23reg/archive/2010/08/08/1795067.html
+wave文件(*.wav)格式、PCM数据格式
+http://source.android.com/devices/audio/index.html
+Android 音频
+
+编解码
+https://blog.csdn.net/benkaoya/article/details/79558896
+h264各常用size推荐码率
+
+
+https://github.com/latelee/H264BSAnalyzer
+查看H264的工具，能识别每一帧
+可能有兼容问题，解决方案：https://www.microsoft.com/zh-CN/download/details.aspx?id=26999
+这里下载x64/x86都试一下，win10 x64 的下载了x86的包后才修复。
+
+http://www.cppblog.com/lymons/archive/2010/02/23/108266.aspx#ExifMarker
+Exif文件格式描述
+
+https://blog.csdn.net/shelldon/article/details/54234426
+JPEG系列二 JPEG文件中的EXIF（上）
+https://blog.csdn.net/shelldon/article/details/54407534
+JPEG系列二 JPEG文件中的EXIF（下）
+
+
+https://blog.csdn.net/m0_37605642/article/details/121566820
+FFmpeg教程（超级详细版）
+https://blog.csdn.net/qq_15255121/category_11001611.html
+ffmpeg专栏
+https://github.com/cmeng-git/ffmpeg-android
+github上一个开源项目，android支持ffmpeg
+
+
+https://blog.csdn.net/zz460833359/article/details/121001749
+(推荐阅读)H264, H265硬件编解码基础及码流分析
+https://blog.csdn.net/ta893115871/article/details/111735710
+Android音视频【三】硬解码播放H264
+https://developer.android.google.cn/reference/android/media/MediaCodec
+谷歌官方文档，关于mediacodec的编解码
+
+https://zhuanlan.zhihu.com/p/457734224
+音视频基础：H264结构与码流
+
+https://blog.csdn.net/yinshipin007/article/details/124718988
+https://www.jianshu.com/p/c1fa35c7de0b
+https://zhuanlan.zhihu.com/p/557065236
+https://github.com/leandromoreira/digital_video_introduction/blob/master/README-cn.md
+https://github.com/leandromoreira/digital_video_introduction
+https://segmentfault.com/a/1190000021049773
+编解码基础
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+各类问题解决方法
+https://blog.csdn.net/homewm/article/details/92562342
+解决VM Workstation安装VMware Tools显示灰色的办法
+
+https://blog.csdn.net/datapad/article/details/116045457
+ubuntu 调整滚轮速度
+
+https://zhuanlan.zhihu.com/p/426876766
+vscode卡在下载某个组件的位置
+
+https://blog.csdn.net/qq_43744723/article/details/122090500
+python版本切换（ubuntu下）
+
+https://blog.csdn.net/PPPPPPPKD/article/details/124383463
+大小端
+
+https://it.cha138.com/javascript/show-87152.html
+ubuntu上使用uvc 、茄子相机
+
+https://blog.csdn.net/weixin_44690195/article/details/126973117
+ubuntu上的vm太卡，参考这个试了一下，不知道结果怎么样
+似乎有点效果，后续再看看吧
+
+
+https://www.jianshu.com/p/93303b9fb21a
+ubuntu安装beyondCompare
+
+
+https://blog.csdn.net/Mr_quan_/article/details/80259270
+解决win10缩放125%时，字体模糊的问题
+
+一些命令
+查询android 设备 camera信息：
+adb shell dumpsys media.camera 
+查询android设备cpu等资源的占用状态
+adb shell top
+4. 工具推荐
+
+
+
+ChatGPT
+https://chat18.aichatos.xyz/#/chat/1707187364755
+搜索引擎
+https://elixir.bootlin.com/linux/latest/ident/of_clk_get
+似乎是一个linux的小站，可以查很多原生函数的定义
+Welcome to The Linux Kernel’s documentation — The Linux Kernel documentation
+https://www.kernel.org/doc/html/v4.11/index.html
+linux kernel 文档站，跟前一个搭配使用效果更佳
+http://aospxref.com/android-12.0.0_r3/
+在Android源码中搜索
+通用工具
+
+baobab
+这是一个ubuntu 可视化 磁盘占用 磁盘分析工具
+
+tabby-1.0.181-portable-x64.zip
+https://github.com/Eugeny/tabby/releases/tag/v1.0.181
+github 可下载
+
+
+https://blog.csdn.net/libusi001/article/details/124309613?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522165828258216782390587205%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=165828258216782390587205&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-2-124309613-null-null.142^v32^control,185^v2^control&utm_term=vscode&spm=1018.2226.3001.4187
+VSCode 最全实用插件（VIP典藏版）
+
+https://blog.csdn.net/strive0_0/article/details/124967746
+vscode如何连接ubuntu服务器
+
+https://blog.csdn.net/m0_64560888/article/details/122269663
+vscode 出现“未定义标识符cout”
+
+valgrind和sanitizer也是可以用于定位内存泄漏的工具，有兴趣可以研究下，网址如下：
+https://github.com/google/sanitizers/wiki/AddressSanitizerLeakSanitizer
+https://valgrind.org/docs/manual/mc-manual.html
+这是两个工具的对比：
+https://developers.redhat.com/blog/2021/05/05/memory-error-checking-in-c-and-c-comparing-sanitizers-and-valgrind
+
+https://c.runoob.com/compile/11/
+在线编译工具
+http://pad.haroopress.com/
+markdown编辑器
+http://pad.haroopress.com/user.html
+一个markdown工具，用来记笔记可能不错 
+
+https://blog.csdn.net/renlonggg/article/details/79281074
+如何将vim打造成Linux下的source insight
+
+http://textanalysistool.github.io/
+TextAnalisysTools
+
+
+https://blog.csdn.net/nanke_yh/article/details/127890364
+linux卸载vmware
+
+https://developer.android.google.cn/studio/releases/platform-tools?hl=zh-cn
+adb下载
+
+
+
+
+AI绘画
+
+https://www.bilibili.com/read/cv18292916
+Stable Diffusion 本地部署教程
+
+https://zhuanlan.zhihu.com/p/560226367
+
+
+https://huggingface.co/spaces/stabilityai/stable-diffusion
+
+
+5. 娱乐与备忘录
+https://www.gcores.com/
+机核，一个游戏网站
+https://www.xuanpai.com/
+玄派网
+https://assassinscreed.fandom.com/zh/wiki/%E9%AD%8F%E7%BE%BD
+刺客信条维基百科
+http://baike.baidu.com/view/3523027.htm
+游戏-危险节奏 
+https://wallhaven.cc/latest?page=2
+.壁纸网站
+
+
+
+
+拯救者 刃7000K 2020十代英特尔酷睿i5 分体台式机 黑色
+英特尔酷睿十代i5-10400/Windows 10 家庭中文版/16G/ 512G SSD/GTX1660 SUPER-6GB/黑色
+https://anydesk.com/zhs/downloads/linux
+
+
+
+
+https://zhuanlan.zhihu.com/p/545095569
+
+vscode中 .json 文件配置
+/home/sxl/work/sdk/see0101/code/frameworks/av/services/camera/libcameraservice/.vscode/c_cpp_properties.json
+要如何配置才能没有波浪线
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/sxl/work/sdk/see0101/code/system/media/private/camera/include",
+                "/home/sxl/work/sdk/see0101/code/frameworks/native/include/media/openmax",
+                "/home/sxl/work/sdk/see0101/code/frameworks/av/media/ndk",
+                "/home/sxl/work/sdk/see0101/code/external/dynamic_depth/includes",
+                "/home/sxl/work/sdk/see0101/code/external/dynamic_depth/internal",
+                "/home/sxl/work/sdk/see0101/code/system/libbase/include/",
+                "/home/sxl/work/sdk/see0101/code/frameworks/native/libs/",
+                "/home/sxl/work/sdk/see0101/code/system/libhidl/transport/include/",
+                "/home/sxl/work/sdk/see0101/code/frameworks/av/media/libaudioclient/",
+                "/home/sxl/work/sdk/see0101/code/system/media/camera/include/",
+                "/home/sxl/work/sdk/see0101/code/frameworks/av/media/libmedia/include/",
+                "/home/sxl/work/sdk/see0101/code/system/core/libutils/",
+                "/home/sxl/work/sdk/see0101/code/system/memory/libmemunreachable/include/",
+                "/home/sxl/work/sdk/see0101/code/frameworks/av/media/utils/include/",
+                "/home/sxl/work/sdk/see0101/code/system/core/libcutils/include/",
+                "/home/sxl/work/sdk/see0101/code/frameworks/av/camera/include/",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+
+/home/sxl/work/sdk/see0101/code/hardware/interfaces/camera/.vscode/c_cpp_properties.json
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/sxl/work/sdk/see0101/code/prebuilts/vndk/v30/arm64/include/external/libyuv/files/",
+                "/home/sxl/work/sdk/see0101/code/prebuilts/vndk/v30/arm64/include/external/libjpeg-turbo/",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
+
+
+https://ambr.top/chs
+安柏计划
+一个原神相关的资源网站
+
+
+docker技术
+
+解析力 分辨力 清晰度 测试 原图
