@@ -39,10 +39,39 @@ MemAvailable:     703210 kB (-9.763%)
 
 
 
+帮我写一段C++的函数，要做的事情有：
+1. 接受一个int参数， devId；另外接受一个 DateStruct& 的输出参数。
+struct DateStruct{
+    int chn;
+    string codec_fmt;
+}
+2. 构建一个字符串，比如devId=0，则string str = "/proc/mi_modules/mi_venc/mi_venc0" 并判断这个路径的文件是否存在，如果不存在，返回失败
+3. 如果存在，找到文件中 带有内容 “OutputPort of dev: 0” 的一行，记录其行号 line_number
+通常会是这样的内容：
+---------------------------- OutputPort of dev: 0 -----------------------------
+ChnId  CODEC  Profile   BufSize MinAllocSize  RefNum  bByFrame  FrameCnt  DropCnt  ReEncCnt  RingUnreadCnt  RingTotalCnt   UsrLockedCnt
+    0   H264        1   1036800          102       0         1     96395        0         0              0             0              0
+4. 如果存在，且记录了 line_number， 那么 line_number+2 就是我要提取数据的那一行，从这一行中，提取第一列，记录chn=0
+提取第二列，记录codec_fmt="H264"
+5. 将chn和codec_fmt 合并成一个结构体，作为out型参数，传出.
 
 
 
 
+现在情况有些变化，OutputPort of dev那一行之后可能是多个 ChnId，也有可能是0个
+所以现在你需要传出一个std::vector
+---------------------------- OutputPort of dev: 1 -----------------------------
+ChnId  CODEC  Profile   BufSize MinAllocSize  RefNum  bByFrame  FrameCnt  DropCnt  ReEncCnt  RingUnreadCnt  RingTotalCnt   UsrLockedCnt
+    0   H264        1   1036800          201       0         1    242779        0         0              0             0              0
+    1   H264        1   1036800           90       0         1    290949        0         0              0             0              0
+
+1. 首先找到 Common info for mi_venc 这一行
+-----------------------------------------Common info for mi_venc-----------------------------------------
+  ChnNum  EnChnNum  PassNum  InPortNum  OutPortNum  CollectSize
+      64         0        1          1           0            0
+如果 EnChnNum 对应的是0，则return 失败
+
+2. 
 
 
 
@@ -84,7 +113,12 @@ echo "ifconfig eth0:1 10.66.30.53 netmask 255.255.254.0"  >> /customer/demo.sh
 echo "mount -t nfs 10.66.30.1:/home/sxl/work/share /mnt -o nolock,tcp" >> /customer/demo.sh
 
 
-echo dump_out 0 216000 /mnt > /proc/mi_modules/mi_venc/mi_venc0
+echo dump_out 0 15000 /mnt > /proc/mi_modules/mi_venc/mi_venc0
+echo dump_out 1 15000 /mnt > /proc/mi_modules/mi_venc/mi_venc0
+echo dump_out 0 15000 /mnt > /proc/mi_modules/mi_venc/mi_venc1
+echo dump_out 1 15000 /mnt > /proc/mi_modules/mi_venc/mi_venc1
+
+
 
 LD_LIBRARY_PATH=/lib:/config/lib:/oem/engine/mpp /customer/bin/at_test
 
@@ -1167,3 +1201,59 @@ https://ambr.top/chs
 docker技术
 
 解析力 分辨力 清晰度 测试 原图
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+不拉踩。我深入玩过的SLG游戏并不多，一般也就是充个月卡，所以并不能针对深氪玩家建议。对于低氪玩家来说，最大的问题就是手上的将卡太弱。导致参与感不强。
+由于职业分类的加入，低氪玩家可以避开主C赛道，专心辅助，进而在团队中能发挥巨大作用。其实说到底，SLG游戏的核心并不是策略，而是团队协作。
+谋定天下有意识地在简化一些存在了很久，但其实很反人类的操作。比如下面这些，就是我认为比较好的点：
+可以后台自动补充兵源，简化开荒操作；
+游戏能自动铺路；
+在土地溢出后能自动淘汰占领的低级地；
+建造无需等待，能够立即完成；
+攻城前需要建攻城大营，平时一小时的行军路程，只要3分钟就可以抵达集结；
+能够预约攻城；
+
+关于抽卡，我很难评价，因为我目前还是零氪，只有几张简单的卡和战法。
+听说是不锁核心卡，但现在我也没抽到，所以也不敢说，等后面抽到了再说吧。
+
+
+我深入玩过的SLG游戏并不多，一般也就是充个月卡，因此对深氪玩家的建议可能不太适用。对于低氪玩家来说，最大的困扰就是手上的将卡太弱，导致参与感不强。
+
+由于职业分类的加入，低氪玩家可以避开主C赛道，专注于辅助，从而在团队中发挥重要作用。其实，说到底，SLG游戏的核心并不是策略，而是团队协作。
+
+《谋定天下》有意识地在简化一些存在已久但实际上很反人类的操作。比如下面这些改进点，我认为就非常好：
+
+自动补充兵源：可以后台自动补充兵源，简化了开荒操作。
+自动铺路：游戏能够自动铺路，省去了不少繁琐的操作步骤。
+土地管理：在土地溢出后能自动淘汰占领的低级地块，优化资源分配。
+即时建造：建造无需等待，能够立即完成，提高了游戏的流畅度。
+快速集结：攻城前需要建攻城大营，通常一小时的行军路程，只需3分钟就可以抵达集结地点，这大大加快了游戏节奏。
+攻城预约：能够预约攻城，让玩家可以更好地安排时间和策略。
+关于抽卡部分，我目前还是零氪，只拥有几张简单的卡和战法，所以很难评价。据说这个游戏不锁核心卡，不过我现在还没抽到，因此无法确认这一点。等以后抽到了再分享经验吧。
+
+
+总的来说，《谋定天下》通过这些优化措施，极大地降低了玩家的操作负担，使游戏更加人性化和友好。特别是对于像我这样的低氪玩家，这些改进提升了游戏体验，让我们在团队中也能找到自己的价值和乐趣。
+
+
+
+
+
