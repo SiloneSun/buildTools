@@ -1,0 +1,1 @@
+/customer/prog_usbcam &

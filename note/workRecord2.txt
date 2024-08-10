@@ -1,0 +1,28 @@
+ST_Common_LdcStartStitchModeChn
+
+
+
+ifconfig eth1 2.0.0.18 netmask 255.255.254.0
+
+./run_mc.sh -t config/media_engine.json
+
+
+
+[2024-08-05 02:09:42.669][ 2150][INFO][Statistics.cpp.Stats:545][-] stream_0     fps: 25.4139 bitRate: 4211 latency:27 maxInterval:43565 minInterval:36519 averageInterval:39990
+[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_1       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
+[2024-08-05 02:09:42.886][ 2155][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_0       fps: 25.4039 bitRate: 10287 latency:1681 maxInterval:44961 minInterval:35132 averageInterval:39990
+
+
+缺少的：
+[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_2       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
+[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] hdmi_in_0_enc_0       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
+[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] screen_0_enc_0       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
+
+
+
+1. 检查 hdmi in stream wbc stream是否创建，是否有notify start, get venc stream
+2. get venc stream fail? err code？
+3. output stream date?
+
+
+

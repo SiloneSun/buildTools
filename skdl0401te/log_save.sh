@@ -1,0 +1,1 @@
+cp /userdata/log/sv /mnt/skdl0401te/save/ -r

@@ -1,0 +1,6 @@
+{
+    "PanoramaLdcEnable": true,
+    "s32ZoomH": 40,
+    "s32DistortionRatio": 0,
+    "cameraId" : 0
+}

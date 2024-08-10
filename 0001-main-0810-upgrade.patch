@@ -1,0 +1,685 @@
+From 1cb24c13f5019e1549273a30a53a22e2de89c293 Mon Sep 17 00:00:00 2001
+From: sunxilong <sunxilong@seevision.cn>
+Date: Sat, 10 Aug 2024 14:18:44 +0800
+Subject: [PATCH] =?utf-8?q?[=E7=B3=BB=E7=BB=9F=E8=BD=AF=E4=BB=B6][?=
+ =?utf-8?q?=E7=B3=BB=E7=BB=9F][main]0810=20upgrade?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+---
+ cbrTest.sh                         |   8 +++-
+ diagram/live555_testrtspclient.ddd | Bin 0 -> 1226 bytes
+ diagram/sxw0403.ddd                | Bin 0 -> 2984 bytes
+ dump.sh                            |  28 +++++++++++++
+ git_push.sh                        |  31 ++++++++++++++
+ note/workRecord2                   |   1 +
+ note/workRecord2.txt               |  28 +++++++++++++
+ skdl0401p/auto_module_test5.sh     |  34 +++++++++++++++
+ skdl0401p/cbrTest.sh               |  19 ++++++---
+ skdl0401p/kill.sh                  |  23 +++++++++++
+ skdl0401p/monitor_system.sh        |  19 +++++++++
+ skdl0401p/push_so.sh               |   4 ++
+ skdl0401p/testConfig.json          |   6 +++
+ skdl0401p/vbrTest.sh               |  64 +++++++++++++++++++++++++++++
+ skdl0401te/log_save.sh             |   1 +
+ sxw0403/kill.sh                    |  21 ++++++++++
+ sxw0403/log_save.sh                |   1 +
+ sxw0403/push.sh                    |  38 +++++++++++++++++
+ sxw0403/push_so.sh                 |  16 ++++++++
+ sxw0403/start_usbcam.sh            |   1 +
+ vbrTest.sh                         |   8 +++-
+ 21 files changed, 341 insertions(+), 10 deletions(-)
+ create mode 100755 diagram/live555_testrtspclient.ddd
+ create mode 100755 diagram/sxw0403.ddd
+ create mode 100755 dump.sh
+ create mode 100755 git_push.sh
+ create mode 100755 note/workRecord2
+ create mode 100755 note/workRecord2.txt
+ create mode 100644 skdl0401p/auto_module_test5.sh
+ create mode 100755 skdl0401p/kill.sh
+ create mode 100755 skdl0401p/monitor_system.sh
+ create mode 100755 skdl0401p/testConfig.json
+ create mode 100755 skdl0401p/vbrTest.sh
+ create mode 100755 skdl0401te/log_save.sh
+ create mode 100755 sxw0403/kill.sh
+ create mode 100755 sxw0403/log_save.sh
+ create mode 100755 sxw0403/push.sh
+ create mode 100755 sxw0403/push_so.sh
+ create mode 100755 sxw0403/start_usbcam.sh
+
+diff --git a/cbrTest.sh b/cbrTest.sh
+index 77261e9..75692a6 100755
+--- a/cbrTest.sh
++++ b/cbrTest.sh
+@@ -1,8 +1,8 @@
+ #!/bin/bash
+ 
+ # 文件路径
+-DATA_FILE="/userdata/sxl/venc_data.txt"
+-DATA_FILE2="/userdata/sxl/proc_venc_data.txt"
++DATA_FILE="/userdata/sxl/cbr_bitrate.txt"
++DATA_FILE2="/userdata/sxl/cbr_proc_info_venc.txt"
+ 
+ # PYTHON_SCRIPT="plot_data.py"
+ 
+@@ -53,6 +53,10 @@ record_data() {
+ 
+ # 每隔一秒记录一次数据，共记录120次
+ i=0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
+ while [ $i -lt 300 ]; do
+     record_data
+     sleep 1
+diff --git a/diagram/live555_testrtspclient.ddd b/diagram/live555_testrtspclient.ddd
+new file mode 100755
+index 0000000000000000000000000000000000000000..ef4e5ca91a9b11d34bf5560825a981eada576b68
+GIT binary patch
+literal 1226
+zcmV;*1U35uL_}m90Nq$mY};fMe{quL@7lBhF~$Uz3L=FS0_&j!w2icrHfgJ-rjsTV
+zY4e;fnbpS5{HMFoasdu#LX5*yinLSN2~9hpUf|HfCd9;HV!a>@uG^tPs#I|a?|rrt
+z$IeQsu|v?O`m_5zzu)(Je}1+D&>kTW0PdfJW1o%jt7fy=d>w=c)FnloxIO>}@222!
+zH3l2yG(ZGxXaVo>j1}h+Z>7Ii=se-9Jv`buyTiTS@~!`y-IIp9?ze0IKbn9kO;wp}
+zYB~|x8c9Pw8;6fpQr#T7q(C@~XGD!(z%U*|{QOA{zyAay)w{z?%b}2gqGTxYoMg<G
+z<V&n#Eo8DuSot&!zpkcWEwm5dWwi4fF}+YIDQazjl}y&?$J_`}m|BnwV{<zKJM&SP
+zycUBK*9HLI!{u_36FzH5HFjKGRCG<PGu13#ET112CDYWEi<ZgC=SM};8<X6a9pb;x
+z4UKM*Xf|8OYjGQSI%Olj+eYpPbr;x*c6<>xbV}12y+B4&Ak}I*t4XG!sYLZgGYYf;
+znma?(;Rb|RY(R2GeJB7KJC);!-<_o}kKg|9&}yR1!XLkU7bd5fc}c6h(_83}hpg2b
+znxPPn&!-1?0BPpXyYU$H@CZW;kM<2-9yjlWIFFreyv^qEY)T-=gF?vp5Ogm*h(Vb5
+zmCeH|4O^=TE(z4i;zp0sK%yX^OYkQctAqyz%areK92d*Q|F}ZEXuO;djpy_*M+-JZ
+zw_4hJS9r6qov^D3=bo#H`XLM`l5Q3PE_q_fb+3sfXJMeEIRzS&Xp;QgbQ&nn6F;J<
+zh<05<R48~N(w8C~1FgZ-v$Lm&^8Ip(Q-1gWAD>kJ&RSnG3ug7gqd{1Hlm^ktz!z04
+zgE!DJm{qY*Fqm1C<oTMeS!(5kq*fO2QQXfD;e25bZZ1V(SsH?!HEh~9ak*U7EPZya
+zbY^Nn>8`wcdUklRHrK-(EB7b%SdL>o8=(B-5C>Y$qOiWofljlEV%47(B+?-?o4?qc
+zXy#DC@lC5fT%mam&%^LM9wQKRN9mxMho~2KS?-RUMo6>T@uYfHE09gWp}R@=X*JEo
+z9f*kEXqp)^282y%^*WYypEkCi6*cvts|h$}4Z>t13Gf11`i*AUWs4bRzklXXdT$S;
+zxRBlc+1+c$2)=skrwe!ykFBqgj@B;}<m>q)oY_dgx%Cv3k75kz9>0;!B$LgsD}7ow
+zx@k0QF5^e2B-Y<f!m^cw<X8Bpe}J56>wcqMTjqCXCfc6&9^b1XeU4Ime+wZ-a0K&3
+zAEW}jgva1#sq2t7|HImz93E^r^fi%;&g0v|@b%v@xbtxqZdh^P@O~rQ!JJlN`XbZ+
+z2iifeH&?S6PJ8CtVVm{=wDcP}!AIrpcljWi2PWe{*`~RR!(jE$+poZz!zsrMC{;06
+zJ*hS<v!u!M%p~b0IihfKza$@iqZz9%ejw)QSE*g`NT>vk+N##7Bj3h{S0sFds<%cm
+zkh_<F$v?8ZwfIMq->BBk+gnV<C5z>B+hpwhy*9GTkdQAldlX)q$!MF&5I7qcKO!6K
+oa&C;=i8Dz~<jY$~WC+cCHczwFb4xu+guT_*T3hx1g6Q7)53UDgbpQYW
+
+literal 0
+HcmV?d00001
+
+diff --git a/diagram/sxw0403.ddd b/diagram/sxw0403.ddd
+new file mode 100755
+index 0000000000000000000000000000000000000000..7602877426c4ff72e9973023860a3efea5f8e6e3
+GIT binary patch
+literal 2984
+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
+
+literal 0
+HcmV?d00001
+
+diff --git a/dump.sh b/dump.sh
+new file mode 100755
+index 0000000..47eb916
+--- /dev/null
++++ b/dump.sh
+@@ -0,0 +1,28 @@
++i=0
++
++dump_cnt=45000
++
++# SAVE_PATH="/storage"
++SAVE_PATH="/mnt"
++
++
++mkdir -p $SAVE_PATH/dump/
++
++cat /proc/mi_modules/mi_venc/mi_venc0 > $SAVE_PATH/dump/proc_info.txt
++cat /proc/mi_modules/mi_venc/mi_venc1 >> $SAVE_PATH/dump/proc_info.txt
++
++while true
++do
++
++DIR="$SAVE_PATH/dump/$(date "+%Y.%m.%d-%H:%M:%S")"
++mkdir -p $DIR
++
++echo dump_out 0 $dump_cnt $DIR > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 1 $dump_cnt $DIR > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 0 $dump_cnt $DIR > /proc/mi_modules/mi_venc/mi_venc1
++echo dump_out 1 $dump_cnt $DIR > /proc/mi_modules/mi_venc/mi_venc1
++
++sleep $(($dump_cnt / 25 + 1))
++echo ----------------------
++
++done
+diff --git a/git_push.sh b/git_push.sh
+new file mode 100755
+index 0000000..359df2c
+--- /dev/null
++++ b/git_push.sh
+@@ -0,0 +1,31 @@
++#!/bin/bash
++
++# 获取当前分支的上游分支
++upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u})
++
++# 检查命令是否成功
++if [ $? -ne 0 ]; then
++  echo "无法获取上游分支信息"
++  exit 1
++fi
++
++# 提取远程名称和分支名称
++remote=$(echo "$upstream" | cut -d'/' -f1)
++branch=$(echo "$upstream" | cut -d'/' -f2-)
++
++# 输出结果
++echo "远程名称: $remote"
++echo "分支名称: $branch"
++
++# 根据参数决定提交操作
++if [ $# -eq 0 ]; then
++  # 如果没有参数
++  git commit --amend --no-edit
++else
++  # 如果有参数
++  git commit -m "[系统软件][系统][$branch]$*"
++fi
++
++# 使用提取的远程名称进行推送
++git push $remote HEAD:refs/for/$branch
++# git push -u $remote $branch
+diff --git a/note/workRecord2 b/note/workRecord2
+new file mode 100755
+index 0000000..8827fa7
+--- /dev/null
++++ b/note/workRecord2
+@@ -0,0 +1 @@
++ST_Common_LdcStartStitchModeChn
+diff --git a/note/workRecord2.txt b/note/workRecord2.txt
+new file mode 100755
+index 0000000..7068807
+--- /dev/null
++++ b/note/workRecord2.txt
+@@ -0,0 +1,28 @@
++ST_Common_LdcStartStitchModeChn
++
++
++
++ifconfig eth1 2.0.0.18 netmask 255.255.254.0
++
++./run_mc.sh -t config/media_engine.json
++
++
++
++[2024-08-05 02:09:42.669][ 2150][INFO][Statistics.cpp.Stats:545][-] stream_0     fps: 25.4139 bitRate: 4211 latency:27 maxInterval:43565 minInterval:36519 averageInterval:39990
++[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_1       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
++[2024-08-05 02:09:42.886][ 2155][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_0       fps: 25.4039 bitRate: 10287 latency:1681 maxInterval:44961 minInterval:35132 averageInterval:39990
++
++
++缺少的：
++[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] stream_0_enc_2       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
++[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] hdmi_in_0_enc_0       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
++[2024-08-05 02:09:42.881][ 2158][INFO][Statistics.cpp.Stats:545][-] screen_0_enc_0       fps: 25.4038 bitRate: 3468 latency:67 maxInterval:44977 minInterval:35093 averageInterval:39987
++
++
++
++1. 检查 hdmi in stream wbc stream是否创建，是否有notify start, get venc stream
++2. get venc stream fail? err code？
++3. output stream date?
++
++
++
+diff --git a/skdl0401p/auto_module_test5.sh b/skdl0401p/auto_module_test5.sh
+new file mode 100644
+index 0000000..fa4e4ba
+--- /dev/null
++++ b/skdl0401p/auto_module_test5.sh
+@@ -0,0 +1,34 @@
++#!/bin/bash
++
++export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/oem/engine/mpp
++
++counter=0
++while true; do
++    # 执行命令
++    counter=$((counter+1))
++    
++
++    /oem/engine/mpp/module_test -5 &
++    pid=$!  # 获取进程ID
++
++    # 等待10秒
++    sleep 20
++
++    # 发送Ctrl+Z信号（SIGTSTP）到进程
++    kill -SIGTSTP $pid
++
++    # 等待10秒
++    sleep 15
++
++    # 检查进程是否仍然存在
++    if ! ps -p $pid > /dev/null; then
++        echo "normol, continue... counter=$counter, pid=$pid"
++        rm /tmp/COMPOSITE_STREAM_*
++        rm /tmp/STREAM_*
++        sleep 2
++        continue
++    else
++        echo "Error!!! Check why program not stop!  counter=$counter, pid=$pid"
++        exit 1
++    fi
++done
+\ No newline at end of file
+diff --git a/skdl0401p/cbrTest.sh b/skdl0401p/cbrTest.sh
+index ef49e93..75692a6 100755
+--- a/skdl0401p/cbrTest.sh
++++ b/skdl0401p/cbrTest.sh
+@@ -1,11 +1,14 @@
+ #!/bin/bash
+ 
+ # 文件路径
+-DATA_FILE="/userdata/sxl/venc_data.txt"
++DATA_FILE="/userdata/sxl/cbr_bitrate.txt"
++DATA_FILE2="/userdata/sxl/cbr_proc_info_venc.txt"
++
+ # PYTHON_SCRIPT="plot_data.py"
+ 
+ # 清空数据文件
+ echo "ChnId  State  EnPred  base  enhance MaxStreamCnt  Fps_1s    kbps1s  Fps10s    kbps10s" > "$DATA_FILE"
++echo "cat /proc/mi_modules/mi_venc/mi_venc1 :" > "$DATA_FILE2"
+ 
+ total_bit=0
+ total_count=0
+@@ -14,9 +17,9 @@ peak_min_bitrate=9999999
+ target_bitrate=0
+ # 定义函数来读取和保存数据
+ record_data() {
+-    # cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$" >> "$DATA_FILE"
++    cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$" >> "$DATA_FILE"
+ 
+-    cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE"
++    cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE2"
+     if [ $target_bitrate -eq 0 ]; then
+         file="/proc/mi_modules/mi_venc/mi_venc1"
+         content="ChnId RateCtl  GOP MaxBitrate  IPQPDelta  MaxQp  MinQp  MaxIQp  MinIQp  MaxISize  MaxPSize MaxIPProp  QpMap  AbsQp  ModeMap"
+@@ -41,15 +44,19 @@ record_data() {
+     if [ $bitrate -gt $peak_max_bitrate ]; then
+         peak_max_bitrate=$bitrate
+     fi
+-    up_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($peak_max_bitrate - $average_bitrate) / $average_bitrate * 100)}")
+-    down_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($average_bitrate - $peak_min_bitrate) / $average_bitrate * 100)}")
++    up_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($peak_max_bitrate - $target_bitrate) / $target_bitrate * 100)}")
++    down_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($average_bitrate - $target_bitrate) / $target_bitrate * 100)}")
+     br_range_rate=$(awk "BEGIN {printf \"%.2f\", (($bitrate - $target_bitrate) / $target_bitrate * 100)}")
+     echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit"
+-    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE"
++    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE2"
+ }
+ 
+ # 每隔一秒记录一次数据，共记录120次
+ i=0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
+ while [ $i -lt 300 ]; do
+     record_data
+     sleep 1
+diff --git a/skdl0401p/kill.sh b/skdl0401p/kill.sh
+new file mode 100755
+index 0000000..9f6d978
+--- /dev/null
++++ b/skdl0401p/kill.sh
+@@ -0,0 +1,23 @@
++#!/bin/bash
++
++# 定义 kill_proc 函数
++kill_proc() {
++    # 传递进程名称作为函数参数
++    killname=$1
++    # 使用 pgrep 命令查找匹配进程并存储进程 ID
++    killid=$(pgrep $killname)
++    # 如果找到了进程 ID，则使用 kill 命令终止进程
++    if [[ -n $killid ]]; then
++        echo "Killing process $killname (PID: $killid)..."
++        kill -9 $killid
++    else
++        echo "No process found with name: $killname"
++    fi
++}
++
++# 终止三个进程
++# kill_proc prog_usbcam
++# kill_proc prog_api_server
++# kill_proc prog_discovery_server
++
++kill_proc prog_kmsg_logger
+\ No newline at end of file
+diff --git a/skdl0401p/monitor_system.sh b/skdl0401p/monitor_system.sh
+new file mode 100755
+index 0000000..ede0a3c
+--- /dev/null
++++ b/skdl0401p/monitor_system.sh
+@@ -0,0 +1,19 @@
++#!/bin/bash
++record_dir="/userdata"
++record_file="$record_dir/cpu_mem_info/cpu_mem_info_$(date +%Y%m%d_%H%M%S).txt"
++mkdir -p "$record_dir/cpu_mem_info"
++echo "" > "$record_file"
++echo 0 > "$record_dir/monitor_flag"
++while true; do
++    running_flag=$(cat "$record_dir/monitor_flag")
++    echo "monitor_flag = $running_flag"
++    if [ $running_flag -eq 0 ]; then
++        sleep 1
++    else
++        current_time=$(date "+%Y-%m-%d %H:%M:%S")
++        top_info=$(top -bn1)
++        echo "[$current_time]" >> "$record_file"
++        echo "$top_info" >> "$record_file"
++        sleep 1
++    fi
++done
+\ No newline at end of file
+diff --git a/skdl0401p/push_so.sh b/skdl0401p/push_so.sh
+index 7659255..6ca6284 100755
+--- a/skdl0401p/push_so.sh
++++ b/skdl0401p/push_so.sh
+@@ -2,6 +2,10 @@ cp /mnt/skdl0401p/lib/*.so /oem/engine/mpp/
+ cp /mnt/skdl0401p/lib/*.so /customer/libs/
+ cp /mnt/skdl0401p/lib/module_test /oem/engine/mpp/
+ cp /mnt/skdl0401p/lib/prog_kmsg_logger /customer/bin/
++
++cp /mnt/skdl0401p/lib/prog_mytest /oem/engine/mpp/
++cp /mnt/skdl0401p/lib/mi_test /oem/engine/mpp/
++
+ sync
+ 
+ md5sum /oem/engine/mpp/libmedia_interface.so
+diff --git a/skdl0401p/testConfig.json b/skdl0401p/testConfig.json
+new file mode 100755
+index 0000000..da5aec8
+--- /dev/null
++++ b/skdl0401p/testConfig.json
+@@ -0,0 +1,6 @@
++{
++    "PanoramaLdcEnable": true,
++    "s32ZoomH": 40,
++    "s32DistortionRatio": 0,
++    "cameraId" : 0
++}
+\ No newline at end of file
+diff --git a/skdl0401p/vbrTest.sh b/skdl0401p/vbrTest.sh
+new file mode 100755
+index 0000000..0fe75b6
+--- /dev/null
++++ b/skdl0401p/vbrTest.sh
+@@ -0,0 +1,64 @@
++#!/bin/bash
++
++# 文件路径
++DATA_FILE="/userdata/sxl/vbr_bitrate.txt"
++DATA_FILE2="/userdata/sxl/vbr_prof_info_venc.txt"
++
++# PYTHON_SCRIPT="plot_data.py"
++
++# 清空数据文件
++echo "ChnId  State  EnPred  base  enhance MaxStreamCnt  Fps_1s    kbps1s  Fps10s    kbps10s" > "$DATA_FILE"
++echo "cat /proc/mi_modules/mi_venc/mi_venc1 :" > "$DATA_FILE2"
++
++total_bit=0
++total_count=0
++peak_max_bitrate=0
++peak_min_bitrate=9999999
++target_bitrate=0
++# 定义函数来读取和保存数据
++record_data() {
++    cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$" >> "$DATA_FILE"
++
++    cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE2"
++    if [ $target_bitrate -eq 0 ]; then
++        file="/proc/mi_modules/mi_venc/mi_venc1"
++        content="ChnId RateCtl  GOP MaxBitrate  IPQPDelta  MaxQp  MinQp  MaxIQp  MinIQp  MaxISize  MaxPSize MaxIPProp  ChangePos  QpMap  AbsQp  ModeMap"
++        matching_lines=$(grep -A 1 "$content" "$file" | tail -n 1)
++        target_bitrate=$(echo "$matching_lines" | awk '{print $4}')
++        target_bitrate=$(( target_bitrate / 1024 ))
++        echo "target_bitrate $target_bitrate"
++    fi
++    local bitrate
++    content2="ChnId  State  EnPred  base  enhance MaxStreamCnt  Fps_1s    kbps1s  Fps10s    kbps10s"
++    matching_lines2=$(grep -A 1 "$content2" "$file" | tail -n 1)
++    bitrate=$(echo "$matching_lines2" | awk '{print $8}')
++
++    # bitrate=$(cat /proc/mi_modules/mi_venc/mi_venc1 | grep -E "^[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+([0-9]+)[[:space:]]+[0-9]+\.[0-9]+[[:space:]]+[0-9]+$"|awk '{print $8}')
++    
++    total_bit=$(( total_bit + bitrate ))
++    total_count=$(( total_count + 1 ))  
++    average_bitrate=$(( total_bit / total_count ))
++    if [ $bitrate -lt $peak_min_bitrate ]; then
++        peak_min_bitrate=$bitrate
++    fi
++    if [ $bitrate -gt $peak_max_bitrate ]; then
++        peak_max_bitrate=$bitrate
++    fi
++    up_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($peak_max_bitrate - $target_bitrate) / $target_bitrate * 100)}")
++    down_peak_rate=$(awk "BEGIN {printf \"%.2f\", (($average_bitrate - $target_bitrate) / $target_bitrate * 100)}")
++    br_range_rate=$(awk "BEGIN {printf \"%.2f\", (($bitrate - $target_bitrate) / $target_bitrate * 100)}")
++    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit"
++    echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE2"
++}
++
++# 每隔一秒记录一次数据
++i=0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
++while [ $i -lt 300 ]; do
++    record_data
++    sleep 1
++    i=$((i+1))
++done
+\ No newline at end of file
+diff --git a/skdl0401te/log_save.sh b/skdl0401te/log_save.sh
+new file mode 100755
+index 0000000..9eac560
+--- /dev/null
++++ b/skdl0401te/log_save.sh
+@@ -0,0 +1 @@
++cp /userdata/log/sv /mnt/skdl0401te/save/ -r
+\ No newline at end of file
+diff --git a/sxw0403/kill.sh b/sxw0403/kill.sh
+new file mode 100755
+index 0000000..b6b8903
+--- /dev/null
++++ b/sxw0403/kill.sh
+@@ -0,0 +1,21 @@
++#!/bin/bash
++
++# 定义 kill_proc 函数
++kill_proc() {
++    # 传递进程名称作为函数参数
++    killname=$1
++    # 使用 pgrep 命令查找匹配进程并存储进程 ID
++    killid=$(pgrep $killname)
++    # 如果找到了进程 ID，则使用 kill 命令终止进程
++    if [[ -n $killid ]]; then
++        echo "Killing process $killname (PID: $killid)..."
++        kill -9 $killid
++    else
++        echo "No process found with name: $killname"
++    fi
++}
++
++# 终止三个进程
++kill_proc prog_usbcam
++# kill_proc prog_api_server
++# kill_proc prog_discovery_server
+diff --git a/sxw0403/log_save.sh b/sxw0403/log_save.sh
+new file mode 100755
+index 0000000..737f8b1
+--- /dev/null
++++ b/sxw0403/log_save.sh
+@@ -0,0 +1 @@
++cp /userdata/logs/application /mnt/sxw0403/logs/ -r
+\ No newline at end of file
+diff --git a/sxw0403/push.sh b/sxw0403/push.sh
+new file mode 100755
+index 0000000..13b5955
+--- /dev/null
++++ b/sxw0403/push.sh
+@@ -0,0 +1,38 @@
++# cp /mnt/skdl0401te/app/prog_api_server /customer/
++# cp /mnt/skdl0401te/app/prog_discovery_server /customer/
++# cp /mnt/skdl0401te/app/www.tar.bz2 /customer/
++# cp /mnt/skdl0401te/app/prog_usbcam /customer/
++# cp /mnt/skdl0401te/app/prog_kmsg_logger /customer/
++# cp /mnt/skdl0401te/app/prog_device /customer/
++# cp /mnt/skdl0401te/app/prog_msg_forwarder /customer/
++
++
++SHARE_PATH=/customer/
++
++# 定义 copy_file 函数
++copy_file() {
++    local file_path="$1"
++    local file_name=$(basename "$file_path")
++    if [ -f "$SHARE_PATH/$file_name" ]; then
++        local src_md5=$(md5sum "$file_path" | awk '{print $1}')
++        local dst_md5=$(md5sum "$SHARE_PATH/$file_name" | awk '{print $1}')
++        if [ "$src_md5" = "$dst_md5" ]; then
++            echo -e "skip \033[0;34m$file_name\033[0m"
++            return
++        fi
++    fi
++    cp "$file_path" "$SHARE_PATH"
++    echo -e "copied [ \033[0;31m$file_name\033[0m] to $SHARE_PATH"
++}
++
++
++# copy_file /mnt/skdl0401te/app/www.tar.bz2 
++# copy_file /mnt/skdl0401te/app/prog_api_server 
++# copy_file /mnt/skdl0401te/app/prog_discovery_server
++# copy_file /mnt/skdl0401te/app/prog_usbcam
++# copy_file /mnt/skdl0401te/app/prog_kmsg_logger
++# copy_file /mnt/skdl0401te/app/prog_device
++# copy_file /mnt/skdl0401te/app/prog_msg_forwarder
++copy_file /mnt/sxw0403/app/prog_usbcam
++
++sync
+diff --git a/sxw0403/push_so.sh b/sxw0403/push_so.sh
+new file mode 100755
+index 0000000..6ca6284
+--- /dev/null
++++ b/sxw0403/push_so.sh
+@@ -0,0 +1,16 @@
++cp /mnt/skdl0401p/lib/*.so /oem/engine/mpp/
++cp /mnt/skdl0401p/lib/*.so /customer/libs/
++cp /mnt/skdl0401p/lib/module_test /oem/engine/mpp/
++cp /mnt/skdl0401p/lib/prog_kmsg_logger /customer/bin/
++
++cp /mnt/skdl0401p/lib/prog_mytest /oem/engine/mpp/
++cp /mnt/skdl0401p/lib/mi_test /oem/engine/mpp/
++
++sync
++
++md5sum /oem/engine/mpp/libmedia_interface.so
++md5sum /oem/engine/mpp/libutils.so
++md5sum /oem/engine/mpp/libmi_internal.so
++md5sum /oem/engine/mpp/libdevice_sdk.so
++md5sum /oem/engine/mpp/libjsoncpp.so
++
+diff --git a/sxw0403/start_usbcam.sh b/sxw0403/start_usbcam.sh
+new file mode 100755
+index 0000000..4fc3ac0
+--- /dev/null
++++ b/sxw0403/start_usbcam.sh
+@@ -0,0 +1 @@
++/customer/prog_usbcam &
+\ No newline at end of file
+diff --git a/vbrTest.sh b/vbrTest.sh
+index 2753850..0fe75b6 100755
+--- a/vbrTest.sh
++++ b/vbrTest.sh
+@@ -1,8 +1,8 @@
+ #!/bin/bash
+ 
+ # 文件路径
+-DATA_FILE="/userdata/sxl/data_vbr.txt"
+-DATA_FILE2="/userdata/sxl/info_proc_vbr.txt"
++DATA_FILE="/userdata/sxl/vbr_bitrate.txt"
++DATA_FILE2="/userdata/sxl/vbr_prof_info_venc.txt"
+ 
+ # PYTHON_SCRIPT="plot_data.py"
+ 
+@@ -53,6 +53,10 @@ record_data() {
+ 
+ # 每隔一秒记录一次数据
+ i=0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
++echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
++echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc1
+ while [ $i -lt 300 ]; do
+     record_data
+     sleep 1
+-- 
+2.25.1
+

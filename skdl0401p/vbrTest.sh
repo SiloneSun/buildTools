@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # 文件路径
-DATA_FILE="/userdata/sxl/cbr_bitrate.txt"
-DATA_FILE2="/userdata/sxl/cbr_proc_info_venc.txt"
+DATA_FILE="/userdata/sxl/vbr_bitrate.txt"
+DATA_FILE2="/userdata/sxl/vbr_prof_info_venc.txt"
 
 # PYTHON_SCRIPT="plot_data.py"
 
@@ -22,7 +22,7 @@ record_data() {
     cat /proc/mi_modules/mi_venc/mi_venc1 >> "$DATA_FILE2"
     if [ $target_bitrate -eq 0 ]; then
         file="/proc/mi_modules/mi_venc/mi_venc1"
-        content="ChnId RateCtl  GOP MaxBitrate  IPQPDelta  MaxQp  MinQp  MaxIQp  MinIQp  MaxISize  MaxPSize MaxIPProp  QpMap  AbsQp  ModeMap"
+        content="ChnId RateCtl  GOP MaxBitrate  IPQPDelta  MaxQp  MinQp  MaxIQp  MinIQp  MaxISize  MaxPSize MaxIPProp  ChangePos  QpMap  AbsQp  ModeMap"
         matching_lines=$(grep -A 1 "$content" "$file" | tail -n 1)
         target_bitrate=$(echo "$matching_lines" | awk '{print $4}')
         target_bitrate=$(( target_bitrate / 1024 ))
@@ -51,7 +51,7 @@ record_data() {
     echo "avg_br:$average_bitrate, br:$bitrate ( $br_range_rate % ), max:$peak_max_bitrate ( $up_peak_rate % ), min:$peak_min_bitrate ( $down_peak_rate % ), total: $total_bit" >> "$DATA_FILE2"
 }
 
-# 每隔一秒记录一次数据，共记录120次
+# 每隔一秒记录一次数据
 i=0
 echo dump_out 0 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
 echo dump_out 1 7500 /storage > /proc/mi_modules/mi_venc/mi_venc0
